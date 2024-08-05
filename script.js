@@ -77,9 +77,44 @@ const gameController = (function (
 
   function checkGameState() {
     // check rows
+    gameboard.forEach((row) => {
+      if ((row[0].getValue() === row[1].getValue()) === row[2].getValue()) {
+        return [true, row[0].getValue()];
+      }
+    });
+
     // check cols
+    gameboard.forEach((row, index) => {
+      if (
+        (gameboard[0][index].getValue() === gameboard[1][index].getValue()) ===
+        gameboard[2][index].getValue()
+      ) {
+        return [true, row[index].getValue()];
+      }
+    });
+
     // check diags
+    if (
+      (gameboard[0][0].getValue() === gameboard[1][1].getValue()) ===
+        gameboard[2][2].getValue() ||
+      (gameboard[0][2].getValue() === gameboard[1][1].getValue()) ===
+        gameboard[2][0].getValue()
+    ) {
+      return [true, gameboard[1][1].getValue()];
+    }
+
     // check tie
+    let emptySpaces = 0;
+    gameboard.forEach((row) => {
+      emptySpaces += row.filter((cell) => {
+        cell.getValue() === " ";
+      }).length;
+    });
+    if (emptySpaces === 0) {
+      return [true, null];
+    }
+
+    return [false, null];
   }
 
   function playGame() {
@@ -101,7 +136,7 @@ const gameController = (function (
 
       let [gameOver, winner] = checkGameState();
       if (gameOver) {
-        // Win or tie message
+        // Win or tie message (match token to player)
         break;
       }
 

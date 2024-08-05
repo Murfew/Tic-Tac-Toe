@@ -17,6 +17,7 @@ const gameboard = (function () {
       return false;
     } else {
       board[row][column].setValue(player.token);
+      return true;
     }
   }
 
@@ -73,8 +74,38 @@ const gameController = (function (
     gameboard.printBoard();
     console.log(`It's ${getActivePlayer.name}'s turn`);
   }
-  // Win checking (inside round playing)
-})();
 
-gameboard.makeMove({ token: "X" }, 0, 0);
-gameboard.printBoard();
+  function checkGameState() {
+    // check rows
+    // check cols
+    // check diags
+    // check tie
+  }
+
+  function playGame() {
+    while (true) {
+      printNewRound();
+
+      while (true) {
+        let playerRow = prompt(
+          "In which row would you like to make your move?"
+        );
+        let playerCol = prompt(
+          "In which column would you like to make your move?"
+        );
+
+        if (gameboard.makeMove(getActivePlayer, playerRow, playerCol)) {
+          break;
+        }
+      }
+
+      let [gameOver, winner] = checkGameState();
+      if (gameOver) {
+        // Win or tie message
+        break;
+      }
+
+      swtichPlayer();
+    }
+  }
+})();

@@ -169,4 +169,4 @@ const gameController = (function (
   return { playGame };
 })();
 
-gameController.playGame();
+const displayController = (function () {})();

@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  background-color: black;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  width: 35vw;
+  height: 35vw;
+}
+
+button {
+  font-size: 2.25em;
+}

@@ -169,4 +169,14 @@ const gameController = (function (
   return { playGame };
 })();
 
-const displayController = (function () {})();
+const displayController = (function () {
+  const updateGrid = () => {
+    const gameBtns = document.querySelectorAll(".container button");
+    const board = gameboard.getBoard();
+    gameBtns.forEach((btn) => {
+      let row = btn.dataset.row;
+      let column = btn.dataset.column;
+      btn.textContent = board[row][column].getValue();
+    });
+  };
+})();

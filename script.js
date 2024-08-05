@@ -13,11 +13,20 @@ const gameboard = (function () {
   const getBoard = () => board;
 
   // Move validation and applying move
+
+  function makeMove(player, row, column) {
+    if (board[row][column] !== null) {
+      return false;
+    } else {
+      board[row][column] = player.token;
+    }
+  }
+
   // Console printing
 })();
 
 function Cell() {
-  let value = "";
+  let value = null;
 
   const getValue = () => value;
 

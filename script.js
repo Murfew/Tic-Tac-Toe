@@ -17,13 +17,9 @@ const gameboard = (function () {
   // Move validation and applying move
 
   const makeMove = (token, row, column) => {
-    if (board[row][column].getValue() !== " ") {
-      console.log("Invalid move. Try again.");
-      return false;
-    } else {
+    if (board[row][column].getValue() === " ") {
       board[row][column].setValue(token);
       availableSpaces -= 1;
-      return true;
     }
   };
 
@@ -132,51 +128,46 @@ const gameController = (function (
     return [false, false];
   };
 
-  const playGame = () => {
-    while (true) {
-      printNewRound();
+  const playRound = (row, column) => {
+    gameboard.makeMove(getActivePlayer().token, row, column);
 
-      let playerRow;
-      let playerCol;
+    displayController.updateGrid();
 
-      while (true) {
-        playerRow = Number(
-          prompt("In which row would you like to make your move?")
-        );
-        playerCol = Number(
-          prompt("In which column would you like to make your move?")
-        );
-
-        if (gameboard.makeMove(getActivePlayer().token, playerRow, playerCol)) {
-          break;
-        }
+    const [gameOver, isTie] = checkGameState(row, column);
+    if (gameOver) {
+      if (isTie) {
+        alert("The game was a tie!");
+      } else {
+        alert(`${getActivePlayer().name} wins!`);
       }
-
-      const [gameOver, isTie] = checkGameState(playerRow, playerCol);
-      if (gameOver) {
-        if (isTie) {
-          alert("The game was a tie!");
-        } else {
-          alert(`${getActivePlayer().name} wins!`);
-        }
-        break;
-      }
-
-      swtichPlayer();
     }
+
+    swtichPlayer();
   };
 
-  return { playGame };
+  return { playRound, getActivePlayer };
 })();
 
 const displayController = (function () {
+  const gameBtns = document.querySelectorAll(".container button");
+  const board = gameboard.getBoard();
   const updateGrid = () => {
-    const gameBtns = document.querySelectorAll(".container button");
-    const board = gameboard.getBoard();
     gameBtns.forEach((btn) => {
       let row = btn.dataset.row;
       let column = btn.dataset.column;
       btn.textContent = board[row][column].getValue();
     });
   };
+
+  gameBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      // check if valid move
+      if (board[btn.dataset.row][btn.dataset.column] === " ") {
+        // play move
+        gameController.playRound(btn.dataset.row, btn.dataset.column);
+      }
+    });
+  });
+
+  return { updateGrid };
 })();

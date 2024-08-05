@@ -131,6 +131,9 @@ const displayController = (function () {
   const gameBtns = document.querySelectorAll(".container button");
   const board = gameboard.getBoard();
   const player = document.querySelector(".player");
+  const playAgain = document.querySelector(".play-again");
+  const winner = document.querySelector(".winner");
+  const endDialog = document.querySelector(".game-over");
 
   const update = () => {
     gameBtns.forEach((btn) => {
@@ -155,8 +158,6 @@ const displayController = (function () {
         // if game over display results on display
         // play agin button
         if (gameOver) {
-          const winner = document.querySelector(".winner");
-          const endDialog = document.querySelector(".game-over");
           if (isTie) {
             winner.textContent = "The game was a tie.";
           } else {
@@ -171,6 +172,10 @@ const displayController = (function () {
         update();
       }
     });
+  });
+
+  playAgain.addEventListener("click", () => {
+    endDialog.close();
   });
 
   update();

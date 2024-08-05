@@ -2,6 +2,7 @@ const gameboard = (function () {
   const board = [];
   const rows = 3;
   const columns = 3;
+  let availableSpaces = rows * columns;
 
   for (let i = 0; i < rows; i++) {
     board[i] = [];
@@ -11,15 +12,17 @@ const gameboard = (function () {
   }
 
   const getBoard = () => board;
+  const getAvailableSpaces = () => availableSpaces;
 
   // Move validation and applying move
 
-  const makeMove = (player, row, column) => {
+  const makeMove = (token, row, column) => {
     if (board[row][column].getValue() !== " ") {
       console.log("Invalid move. Try again.");
       return false;
     } else {
-      board[row][column].setValue(player.token);
+      board[row][column].setValue(token);
+      availableSpaces -= 1;
       return true;
     }
   };
@@ -40,7 +43,7 @@ const gameboard = (function () {
     });
   };
 
-  return { printBoard, makeMove, getBoard };
+  return { printBoard, makeMove, getBoard, getAvailableSpaces };
 })();
 
 function Cell() {
@@ -76,44 +79,53 @@ const gameController = (function (
     console.log(`${getActivePlayer().name}'s turn`);
   };
 
-  const checkGameState = () => {
+  const checkGameState = (row, column) => {
     const board = gameboard.getBoard();
 
-    // check rows
-    board.forEach((row) => {
-      if ((row[0].getValue() === row[1].getValue()) === row[2].getValue()) {
-        return [true, false];
-      }
-    });
+    // check the row
 
-    // check cols
-    board.forEach((row, index) => {
-      if (
-        (board[0][index].getValue() === board[1][index].getValue()) ===
-        board[2][index].getValue()
-      ) {
-        return [true, false];
-      }
-    });
-
-    // check diags
     if (
-      (board[0][0].getValue() === board[1][1].getValue()) ===
-        board[2][2].getValue() ||
-      (board[0][2].getValue() === board[1][1].getValue()) ===
-        board[2][0].getValue()
+      board[row][0].getValue() === board[row][1].getValue() &&
+      board[row][0].getValue() === board[row][2].getValue()
     ) {
-      return [true, false];
+      if (board[row][0] !== " ") {
+        return [true, false];
+      }
+    }
+
+    // check column
+    if (
+      board[0][column].getValue() === board[1][column].getValue() &&
+      board[0][column].getValue() === board[2][column].getValue()
+    ) {
+      if (board[0][column] !== " ") {
+        return [true, false];
+      }
+    }
+
+    // check diagonals
+    if ((row + column) % 2 == 0) {
+      if (
+        board[0][0].getValue() === board[1][1].getValue() &&
+        board[0][0].getValue() === board[2][2].getValue()
+      ) {
+        if (board[0][0].getValue() !== " ") {
+          return [true, false];
+        }
+      }
+
+      if (
+        board[0][2].getValue() === board[1][1].getValue() &&
+        board[0][2].getValue() === board[2][0].getValue()
+      ) {
+        if (board[0][2].getValue() !== " ") {
+          return [true, false];
+        }
+      }
     }
 
     // check tie
-    let emptySpaces = 0;
-    board.forEach((row) => {
-      emptySpaces += row.filter((cell) => {
-        cell.getValue() === " ";
-      }).length;
-    });
-    if (emptySpaces === 9) {
+    if (gameboard.getAvailableSpaces() === 0) {
       return [true, true];
     }
 
@@ -124,20 +136,23 @@ const gameController = (function (
     while (true) {
       printNewRound();
 
+      let playerRow;
+      let playerCol;
+
       while (true) {
-        let playerRow = prompt(
-          "In which row would you like to make your move?"
+        playerRow = Number(
+          prompt("In which row would you like to make your move?")
         );
-        let playerCol = prompt(
-          "In which column would you like to make your move?"
+        playerCol = Number(
+          prompt("In which column would you like to make your move?")
         );
 
-        if (gameboard.makeMove(getActivePlayer(), playerRow, playerCol)) {
+        if (gameboard.makeMove(getActivePlayer().token, playerRow, playerCol)) {
           break;
         }
       }
 
-      const [gameOver, isTie] = checkGameState();
+      const [gameOver, isTie] = checkGameState(playerRow, playerCol);
       if (gameOver) {
         if (isTie) {
           alert("The game was a tie!");

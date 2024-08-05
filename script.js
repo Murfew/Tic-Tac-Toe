@@ -15,7 +15,7 @@ const gameboard = (function () {
   // Move validation and applying move
 
   function makeMove(player, row, column) {
-    if (board[row][column] !== null) {
+    if (board[row][column] !== "") {
       return false;
     } else {
       board[row][column] = player.token;
@@ -23,10 +23,16 @@ const gameboard = (function () {
   }
 
   // Console printing
+  function printBoard() {
+    board.forEach((row) => {
+      console.log(row.join(" | "));
+      console.log("-" * 20);
+    });
+  }
 })();
 
 function Cell() {
-  let value = null;
+  let value = "";
 
   const getValue = () => value;
 

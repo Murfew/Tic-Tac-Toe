@@ -39,7 +39,12 @@ const gameboard = (function () {
     });
   };
 
-  return { printBoard, makeMove, getBoard, getAvailableSpaces };
+  return {
+    printBoard,
+    makeMove,
+    getBoard,
+    getAvailableSpaces,
+  };
 })();
 
 function Cell() {
@@ -131,8 +136,6 @@ const gameController = (function (
   const playRound = (row, column) => {
     gameboard.makeMove(getActivePlayer().token, row, column);
 
-    displayController.updateGrid();
-
     const [gameOver, isTie] = checkGameState(row, column);
     if (gameOver) {
       if (isTie) {
@@ -151,23 +154,29 @@ const gameController = (function (
 const displayController = (function () {
   const gameBtns = document.querySelectorAll(".container button");
   const board = gameboard.getBoard();
-  const updateGrid = () => {
+  const player = document.querySelector(".player");
+
+  const update = () => {
     gameBtns.forEach((btn) => {
       let row = btn.dataset.row;
       let column = btn.dataset.column;
       btn.textContent = board[row][column].getValue();
     });
+
+    player.textContent = `${gameController.getActivePlayer().name}'s turn`;
   };
 
   gameBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       // check if valid move
-      if (board[btn.dataset.row][btn.dataset.column] === " ") {
+      if (board[btn.dataset.row][btn.dataset.column].getValue() === " ") {
         // play move
         gameController.playRound(btn.dataset.row, btn.dataset.column);
+        update();
       }
     });
   });
 
-  return { updateGrid };
+  update();
+  return { update };
 })();

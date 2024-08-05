@@ -10,19 +10,22 @@ const gameboard = (function () {
     }
   }
 
+  const getBoard = () => board;
+
   // Move validation and applying move
 
-  function makeMove(player, row, column) {
+  const makeMove = (player, row, column) => {
     if (board[row][column].getValue() !== " ") {
+      console.log("Invalid move. Try again.");
       return false;
     } else {
       board[row][column].setValue(player.token);
       return true;
     }
-  }
+  };
 
   // Console printing
-  function printBoard() {
+  const printBoard = () => {
     board.forEach((row, index) => {
       const rowValues = [];
       row.forEach((cell) => {
@@ -35,9 +38,9 @@ const gameboard = (function () {
         console.log(rowValues.join("|"));
       }
     });
-  }
+  };
 
-  return { printBoard, makeMove };
+  return { printBoard, makeMove, getBoard };
 })();
 
 function Cell() {
@@ -62,32 +65,32 @@ const gameController = (function (
   ];
 
   let activePlayer = players[0];
-  const getActivePlayer = () => {
-    activePlayer;
+  const getActivePlayer = () => activePlayer;
+
+  const swtichPlayer = () => {
+    activePlayer = activePlayer === players[0] ? players[1] : players[0];
   };
 
-  function swtichPlayer() {
-    activePlayer = activePlayer === players[0] ? players[1] : players[0];
-  }
-
-  function printNewRound() {
+  const printNewRound = () => {
     gameboard.printBoard();
-    console.log(`It's ${getActivePlayer.name}'s turn`);
-  }
+    console.log(`${getActivePlayer().name}'s turn`);
+  };
 
-  function checkGameState() {
+  const checkGameState = () => {
+    const board = gameboard.getBoard();
+
     // check rows
-    gameboard.forEach((row) => {
+    board.forEach((row) => {
       if ((row[0].getValue() === row[1].getValue()) === row[2].getValue()) {
         return [true, false];
       }
     });
 
     // check cols
-    gameboard.forEach((row, index) => {
+    board.forEach((row, index) => {
       if (
-        (gameboard[0][index].getValue() === gameboard[1][index].getValue()) ===
-        gameboard[2][index].getValue()
+        (board[0][index].getValue() === board[1][index].getValue()) ===
+        board[2][index].getValue()
       ) {
         return [true, false];
       }
@@ -95,29 +98,29 @@ const gameController = (function (
 
     // check diags
     if (
-      (gameboard[0][0].getValue() === gameboard[1][1].getValue()) ===
-        gameboard[2][2].getValue() ||
-      (gameboard[0][2].getValue() === gameboard[1][1].getValue()) ===
-        gameboard[2][0].getValue()
+      (board[0][0].getValue() === board[1][1].getValue()) ===
+        board[2][2].getValue() ||
+      (board[0][2].getValue() === board[1][1].getValue()) ===
+        board[2][0].getValue()
     ) {
       return [true, false];
     }
 
     // check tie
     let emptySpaces = 0;
-    gameboard.forEach((row) => {
+    board.forEach((row) => {
       emptySpaces += row.filter((cell) => {
         cell.getValue() === " ";
       }).length;
     });
-    if (emptySpaces === 0) {
+    if (emptySpaces === 9) {
       return [true, true];
     }
 
     return [false, false];
-  }
+  };
 
-  function playGame() {
+  const playGame = () => {
     while (true) {
       printNewRound();
 
@@ -129,22 +132,26 @@ const gameController = (function (
           "In which column would you like to make your move?"
         );
 
-        if (gameboard.makeMove(getActivePlayer, playerRow, playerCol)) {
+        if (gameboard.makeMove(getActivePlayer(), playerRow, playerCol)) {
           break;
         }
       }
 
-      let [gameOver, isTie] = checkGameState();
+      const [gameOver, isTie] = checkGameState();
       if (gameOver) {
         if (isTie) {
           alert("The game was a tie!");
         } else {
-          alert(`${getActivePlayer.name} wins!`);
+          alert(`${getActivePlayer().name} wins!`);
         }
         break;
       }
 
       swtichPlayer();
     }
-  }
+  };
+
+  return { playGame };
 })();
+
+gameController.playGame();

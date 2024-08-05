@@ -79,7 +79,7 @@ const gameController = (function (
     // check rows
     gameboard.forEach((row) => {
       if ((row[0].getValue() === row[1].getValue()) === row[2].getValue()) {
-        return [true, row[0].getValue()];
+        return [true, false];
       }
     });
 
@@ -89,7 +89,7 @@ const gameController = (function (
         (gameboard[0][index].getValue() === gameboard[1][index].getValue()) ===
         gameboard[2][index].getValue()
       ) {
-        return [true, row[index].getValue()];
+        return [true, false];
       }
     });
 
@@ -100,7 +100,7 @@ const gameController = (function (
       (gameboard[0][2].getValue() === gameboard[1][1].getValue()) ===
         gameboard[2][0].getValue()
     ) {
-      return [true, gameboard[1][1].getValue()];
+      return [true, false];
     }
 
     // check tie
@@ -111,10 +111,10 @@ const gameController = (function (
       }).length;
     });
     if (emptySpaces === 0) {
-      return [true, null];
+      return [true, true];
     }
 
-    return [false, null];
+    return [false, false];
   }
 
   function playGame() {
@@ -134,9 +134,13 @@ const gameController = (function (
         }
       }
 
-      let [gameOver, winner] = checkGameState();
+      let [gameOver, isTie] = checkGameState();
       if (gameOver) {
-        // Win or tie message (match token to player)
+        if (isTie) {
+          alert("The game was a tie!");
+        } else {
+          alert(`${getActivePlayer.name} wins!`);
+        }
         break;
       }
 

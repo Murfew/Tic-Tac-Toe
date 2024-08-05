@@ -10,8 +10,6 @@ const gameboard = (function () {
     }
   }
 
-  const getBoard = () => board;
-
   // Move validation and applying move
 
   function makeMove(player, row, column) {
@@ -26,9 +24,11 @@ const gameboard = (function () {
   function printBoard() {
     board.forEach((row) => {
       console.log(row.join(" | "));
-      console.log("-" * 20);
+      console.log("------");
     });
   }
+
+  return { printBoard, makeMove };
 })();
 
 function Cell() {

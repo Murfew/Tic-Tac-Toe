@@ -13,18 +13,26 @@ const gameboard = (function () {
   // Move validation and applying move
 
   function makeMove(player, row, column) {
-    if (board[row][column] !== "") {
+    if (board[row][column].getValue() !== " ") {
       return false;
     } else {
-      board[row][column] = player.token;
+      board[row][column].setValue(player.token);
     }
   }
 
   // Console printing
   function printBoard() {
-    board.forEach((row) => {
-      console.log(row.join(" | "));
-      console.log("------");
+    board.forEach((row, index) => {
+      const rowValues = [];
+      row.forEach((cell) => {
+        rowValues.push(cell.getValue());
+      });
+      if (index !== board.length - 1) {
+        console.log(rowValues.join("|"));
+        console.log("-----");
+      } else {
+        console.log(rowValues.join("|"));
+      }
     });
   }
 
@@ -32,13 +40,15 @@ const gameboard = (function () {
 })();
 
 function Cell() {
-  let value = "";
+  let value = " ";
 
   const getValue = () => value;
 
   const setValue = (player) => {
     value = player;
   };
+
+  return { getValue, setValue };
 }
 
 const gameController = (function (
@@ -65,3 +75,6 @@ const gameController = (function (
   }
   // Win checking (inside round playing)
 })();
+
+gameboard.makeMove({ token: "X" }, 0, 0);
+gameboard.printBoard();

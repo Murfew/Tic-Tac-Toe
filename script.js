@@ -23,24 +23,7 @@ const gameboard = (function () {
     }
   };
 
-  // Console printing
-  const printBoard = () => {
-    board.forEach((row, index) => {
-      const rowValues = [];
-      row.forEach((cell) => {
-        rowValues.push(cell.getValue());
-      });
-      if (index !== board.length - 1) {
-        console.log(rowValues.join("|"));
-        console.log("-----");
-      } else {
-        console.log(rowValues.join("|"));
-      }
-    });
-  };
-
   return {
-    printBoard,
     makeMove,
     getBoard,
     getAvailableSpaces,
@@ -73,11 +56,6 @@ const gameController = (function (
 
   const swtichPlayer = () => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
-  };
-
-  const printNewRound = () => {
-    gameboard.printBoard();
-    console.log(`${getActivePlayer().name}'s turn`);
   };
 
   const checkGameState = (row, column) => {
@@ -137,15 +115,13 @@ const gameController = (function (
     gameboard.makeMove(getActivePlayer().token, row, column);
 
     const [gameOver, isTie] = checkGameState(row, column);
-    if (gameOver) {
-      if (isTie) {
-        alert("The game was a tie!");
-      } else {
-        alert(`${getActivePlayer().name} wins!`);
-      }
-    }
 
-    swtichPlayer();
+    if (gameOver) {
+      return [gameOver, isTie];
+    } else {
+      swtichPlayer();
+      return [gameOver, isTie];
+    }
   };
 
   return { playRound, getActivePlayer };
@@ -171,7 +147,27 @@ const displayController = (function () {
       // check if valid move
       if (board[btn.dataset.row][btn.dataset.column].getValue() === " ") {
         // play move
-        gameController.playRound(btn.dataset.row, btn.dataset.column);
+        let [gameOver, isTie] = gameController.playRound(
+          btn.dataset.row,
+          btn.dataset.column
+        );
+
+        // if game over display results on display
+        // play agin button
+        if (gameOver) {
+          const winner = document.querySelector(".winner");
+          const endDialog = document.querySelector(".game-over");
+          if (isTie) {
+            winner.textContent = "The game was a tie.";
+          } else {
+            winner.textContent = `${
+              gameController.getActivePlayer().name
+            } wins!`;
+          }
+          console.log("end");
+          endDialog.showModal();
+        }
+
         update();
       }
     });

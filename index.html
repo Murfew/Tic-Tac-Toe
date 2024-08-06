@@ -22,10 +22,24 @@
     <dialog class="start-game" open>
       <form method="dialog">
         <h2>Let's play Tic-Tac-Toe!</h2>
-        <label for="player-1">Player 1 Name</label>
-        <input type="text" name="player-1" id="player-1" />
-        <label for="player-2">Player 2 Name</label>
-        <input type="text" name="player-2" id="player-2" />
+        <div>
+          <label for="player-1">X Player Name</label>
+          <input
+            type="text"
+            name="player-1"
+            id="player-1"
+            placeholder="X Player"
+          />
+        </div>
+        <div>
+          <label for="player-2">O Player Name</label>
+          <input
+            type="text"
+            name="player-2"
+            id="player-2"
+            placeholder="O Player"
+          />
+        </div>
         <button class="play">Play</button>
       </form>
     </dialog>

@@ -35,7 +35,7 @@ dialog[open] {
   flex-direction: column;
 }
 
-.winner {
+h2 {
   font-size: 2.5em;
   text-align: center;
 }
@@ -47,4 +47,40 @@ dialog[open] {
 
 .play-again {
   width: fit-content;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: space-around;
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.25em;
+}
+
+#player-1,
+#player-2 {
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 0;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  background-color: lightgray;
+  height: 1.25em;
+}
+
+.play {
+  padding: 5px 30px 5px;
+  border-radius: 5px;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+}
+
+.play:hover,
+#player-1:hover,
+#player-2:hover {
+  border: 2px solid black;
 }

@@ -49,13 +49,10 @@ function Cell() {
   return { getValue, setValue };
 }
 
-const gameController = (function (
-  playerOneName = "X Player",
-  playerTwoName = "O Player"
-) {
+const gameController = (function () {
   const players = [
-    { name: playerOneName, token: "X" },
-    { name: playerTwoName, token: "O" },
+    { name: "X Player", token: "X" },
+    { name: "O Player", token: "O" },
   ];
 
   let activePlayer = players[0];
@@ -141,6 +138,10 @@ const displayController = (function () {
   const playAgain = document.querySelector(".play-again");
   const winner = document.querySelector(".winner");
   const endDialog = document.querySelector(".game-over");
+  const startDialog = document.querySelector(".start-game");
+  const playGame = document.querySelector(".play");
+  const player1Name = document.querySelector("#player-1");
+  const player2Name = document.querySelector("#player-2");
 
   const update = () => {
     gameBtns.forEach((btn) => {
@@ -188,8 +189,27 @@ const displayController = (function () {
     gameboard.makeNewBoard();
     update();
     endDialog.close();
+    startDialog.showModal();
   });
 
-  update();
+  playGame.addEventListener("click", () => {
+    if (player1Name.value != "") {
+      gameController.players[0].name = player1Name.value;
+    } else {
+      gameController.players[0].name = "X Player";
+    }
+    if (player2Name.value != "") {
+      gameController.players[1].name = player2Name.value;
+    } else {
+      gameController.players[1].name = "O Player";
+    }
+    update();
+    startDialog.close();
+  });
+
+  window.onload = () => {
+    startDialog.showModal();
+  };
+
   return {};
 })();

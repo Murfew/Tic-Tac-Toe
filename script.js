@@ -2,14 +2,20 @@ const gameboard = (function () {
   const board = [];
   const rows = 3;
   const columns = 3;
-  let availableSpaces = rows * columns;
+  let availableSpaces;
 
-  for (let i = 0; i < rows; i++) {
-    board[i] = [];
-    for (let j = 0; j < columns; j++) {
-      board[i].push(Cell());
+  const makeNewBoard = () => {
+    board.length = 0;
+    availableSpaces = rows * columns;
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      for (let j = 0; j < columns; j++) {
+        board[i].push(Cell());
+      }
     }
-  }
+  };
+
+  makeNewBoard();
 
   const getBoard = () => board;
   const getAvailableSpaces = () => availableSpaces;
@@ -27,6 +33,7 @@ const gameboard = (function () {
     makeMove,
     getBoard,
     getAvailableSpaces,
+    makeNewBoard,
   };
 })();
 
@@ -124,7 +131,7 @@ const gameController = (function (
     }
   };
 
-  return { playRound, getActivePlayer };
+  return { playRound, getActivePlayer, swtichPlayer, players };
 })();
 
 const displayController = (function () {
@@ -164,8 +171,11 @@ const displayController = (function () {
             winner.textContent = `${
               gameController.getActivePlayer().name
             } wins!`;
+
+            if (gameController.getActivePlayer() == gameController.players[1]) {
+              gameController.swtichPlayer();
+            }
           }
-          console.log("end");
           endDialog.showModal();
         }
 
@@ -175,9 +185,11 @@ const displayController = (function () {
   });
 
   playAgain.addEventListener("click", () => {
+    gameboard.makeNewBoard();
+    update();
     endDialog.close();
   });
 
   update();
-  return { update };
+  return {};
 })();
